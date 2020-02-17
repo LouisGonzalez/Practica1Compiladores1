@@ -1,0 +1,91 @@
+package gramaticas;
+import java_cup.runtime.Symbol;
+import pollitos.PolloCSV;
+import java.util.ArrayList;
+import operacionMysql.OperacionEliminar;
+import operacionMysql.OperacionInsertar;
+import operacionMysql.OperacionSeleccionar;
+
+parser code {:
+    
+    public int contFilas = 0;
+    public int contColumnas = 0;
+    public int contColumnas2 = 0;
+    public int contElementos = 0;
+
+    public ArrayList<PolloCSV> palabrasOrdenadas;
+    PolloCSV pollito = new PolloCSV();    
+
+    public SintaxCSV(AnalizadorLexico3 lex, ArrayList<PolloCSV> palabrasOrdenadas){
+        super(lex);
+        this.palabrasOrdenadas = palabrasOrdenadas;
+    };
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo+" "+mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis token: "+s.right,"");
+    };
+
+    public void llenarMatriz(int contFilas, int contColumnas, int totalElementos){
+        String[][] arregloPalabras = new String[contFilas+1][contColumnas+1];
+        System.out.println("Filas: "+contFilas+" Columnas: "+contColumnas+" Total Elementos: "+totalElementos);        
+    }
+    
+    public ArrayList<PolloCSV> listarElementos(ArrayList<PolloCSV> list, PolloCSV pol, int numFila, Object columna, int numColumna, int tipoValor){
+        PolloCSV pollito = new PolloCSV();
+        pollito.setFila(numFila);
+        pollito.setDatoColumna(columna);
+        pollito.setTipoValor(tipoValor);
+        if(numFila == 0){
+            pollito.setTipo("Titulo");
+            pollito.setColumna(numColumna);
+        } else {
+            pollito.setTipo("Elemento");
+            pollito.setColumna(numColumna);
+        }
+        System.out.println("Tipo: "+pollito.getTipo()+" Texto: "+pollito.getDatoColumna()+" No. Columna: "+pollito.getColumna()+" No. Fila: "+pollito.getFila()+" Tipo de dato: "+tipoValor);
+        list.add(pollito);
+        return list;
+    }
+
+    public void escribirDato(ArrayList<PolloCSV> list){
+        System.out.println(list.size());
+    }
+
+
+
+    public void verDatos(ArrayList<PolloCSV> list){
+        for(PolloCSV a: list){
+            System.out.println(a.getDatoColumna());
+        }
+    }
+    
+:}
+
+    terminal COMA, ENTER, COMA_ENTER, DATO_ALFANUMERICO;
+
+    terminal Integer DATO_NUMERICO, DATO_DECIMAL;
+
+    non terminal aa, a;
+    
+    start with aa;
+
+    aa ::= DATO_ALFANUMERICO:e {: System.out.println(e); parser.contElementos++;   if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas, 1); } else if(parser.contFilas != 0) { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas);    parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas2, 1); } :} a 
+        | DATO_NUMERICO:b {: System.out.println(b); parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, b, parser.contColumnas, 2); }  else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, b, parser.contColumnas2, 2); }   :} a 
+        | DATO_DECIMAL:c {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, c, parser.contColumnas, 2);   } else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, c, parser.contColumnas2, 2); } :} a 
+        | COMA {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas, 1); } else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas2, 1); }   :}  aa
+        | {:parser.llenarMatriz(parser.contFilas, parser.contColumnas, parser.contElementos); parser.escribirDato(parser.palabrasOrdenadas);  :}
+;
+    a ::= COMA {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas, 1);   } else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas);         parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas2, 1); } :} a
+        | COMA DATO_ALFANUMERICO:e {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas, 1);   } else if(parser.contFilas != 0) { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas2, 1); } :} a 
+        | COMA DATO_NUMERICO:e {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas, 2);   } else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas2, 2); } :} a 
+        | COMA DATO_DECIMAL:e {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas, 2);   } else if(parser.contFilas != 0) { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, e, parser.contColumnas2, 2); } :} a
+        | COMA_ENTER {: parser.contElementos++; if(parser.contFilas==0){ parser.contColumnas++; parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas, 1);  } else { parser.contColumnas2 = parser.contElementos - (parser.contColumnas)*(parser.contFilas); parser.listarElementos(parser.palabrasOrdenadas, parser.pollito, parser.contFilas, "", parser.contColumnas2, 1); }  parser.contFilas++;   :} aa
+        | ENTER {:parser.contFilas++; parser.escribirDato(parser.palabrasOrdenadas); :} aa 
+        | {:parser.llenarMatriz(parser.contFilas, parser.contColumnas, parser.contElementos); parser.escribirDato(parser.palabrasOrdenadas); parser.verDatos(parser.palabrasOrdenadas);   :}
+;
+
+           

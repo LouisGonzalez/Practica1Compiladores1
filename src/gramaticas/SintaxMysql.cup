@@ -1,0 +1,107 @@
+package gramaticas;
+import java_cup.runtime.Symbol;
+import operacionMysql.*;
+import java.util.ArrayList;
+import pollitos.PolloCSV;
+
+parser code {:
+
+    public int accionPosible = 0;
+    public ArrayList<String> path;
+    
+
+    ArrayList<PolloCSV> list;
+    OperacionEliminar eliminacion;
+    OperacionInsertar insercion;
+    OperacionSeleccionar seleccion;
+
+    public SintacticoMysql(AnalizadorLexico lex, ArrayList<PolloCSV> list){
+        super(lex);
+        this.list = list;
+    }
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo+" "+mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error Sintaxis token: "+s.right,"");
+    }
+
+    public void mostrarValores(String columna){
+        
+    }
+
+    public void verAccion(int accionPosible){
+        System.out.println(accionPosible);
+    }
+    
+    public ArrayList<String> listarElementosPath(){
+    ArrayList<String> a = new ArrayList<>();
+
+
+    return a;
+
+       
+    }
+
+
+
+
+    
+:}
+
+    terminal SELECCIONAR, FIN, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN, VALORES, AND, OR, AGRUPACION_A, COMILLA, COMA, 
+             AGRUPACION_B, PUNTO_COMA, ASTERISCO, IGUAL, MENOR_QUE, MAYOR_QUE, MENOR_IGUAL, MAYOR_IGUAL, MAYOR_MENOR, NUMERO, PALABRA, PUNTO;
+             
+    non terminal   aa, ab, ac, ad, ae, af, ag, ah, ai, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
+
+    start with aa;
+
+    aa ::= SELECCIONAR b | INSERTAR EN i | ACTUALIZAR EN p | ELIMINAR EN w
+;   
+    b ::= ASTERISCO {:parser.accionPosible = 1;:}  c  | PALABRA {:parser.accionPosible = 2;:} d c
+;   
+    d ::= COMA PALABRA:e {:System.out.println(e);:} d |
+;
+    c ::= EN PALABRA PUNTO PALABRA e
+;
+    e ::= PUNTO PALABRA e | FILTRAR y | PUNTO_COMA
+;
+    i ::= PALABRA PUNTO PALABRA j
+;
+    j ::= PUNTO PALABRA j | AGRUPACION_A PALABRA k | m
+;
+    k ::= COMA PALABRA k | AGRUPACION_B m
+;
+    m ::= VALORES n
+;
+    n ::= AGRUPACION_A COMILLA PALABRA COMILLA o | AGRUPACION_A NUMERO o
+;
+    o ::= COMA COMILLA PALABRA COMILLA o | COMA NUMERO o | AGRUPACION_B PUNTO_COMA
+;
+    p ::= PALABRA PUNTO PALABRA q
+;
+    q ::= PUNTO PALABRA q | ASIGNAR r
+;
+    r ::= PALABRA IGUAL COMILLA PALABRA COMILLA l | PALABRA IGUAL NUMERO l
+;
+    l ::= COMA PALABRA IGUAL COMILLA PALABRA COMILLA l | COMA PALABRA IGUAL NUMERO l | PUNTO_COMA | FILTRAR y
+;
+    w ::= PALABRA PUNTO PALABRA x
+;
+    x ::= PUNTO PALABRA x | PUNTO_COMA | FILTRAR y 
+;
+    y ::= PALABRA IGUAL COMILLA PALABRA COMILLA z ad | PALABRA IGUAL NUMERO z ad | PALABRA MAYOR_QUE NUMERO z ad | PALABRA MENOR_QUE NUMERO z ad | PALABRA MAYOR_IGUAL NUMERO z ad | PALABRA MENOR_IGUAL NUMERO z ad | PALABRA MAYOR_MENOR NUMERO z ad   
+;
+    z ::= af | ag | 
+;
+    af ::= AND PALABRA IGUAL COMILLA PALABRA COMILLA ah | AND PALABRA IGUAL NUMERO ah | AND PALABRA MAYOR_QUE NUMERO ah | AND PALABRA MENOR_QUE NUMERO ah | AND PALABRA MAYOR_IGUAL NUMERO ah | AND PALABRA MENOR_IGUAL NUMERO ah | AND PALABRA MAYOR_MENOR NUMERO ah 
+;
+    ag ::= OR PALABRA IGUAL COMILLA PALABRA COMILLA ai | OR PALABRA IGUAL NUMERO ai | OR PALABRA MAYOR_QUE NUMERO ai | OR PALABRA MENOR_QUE NUMERO ai | OR PALABRA MAYOR_IGUAL NUMERO ai | OR PALABRA MENOR_IGUAL NUMERO ai | OR PALABRA MAYOR_MENOR NUMERO ai  
+;
+    ah ::= AND PALABRA IGUAL COMILLA PALABRA COMILLA ah | AND PALABRA IGUAL NUMERO ah | AND PALABRA MAYOR_QUE NUMERO ah | AND PALABRA MENOR_QUE NUMERO ah | AND PALABRA MAYOR_IGUAL NUMERO ah | AND PALABRA MENOR_IGUAL NUMERO ah | AND PALABRA MAYOR_MENOR NUMERO ah |
+;
+    ai ::= OR PALABRA IGUAL COMILLA PALABRA COMILLA ai | OR PALABRA IGUAL NUMERO ai | OR PALABRA MAYOR_QUE NUMERO ai | OR PALABRA MENOR_QUE NUMERO ai | OR PALABRA MAYOR_IGUAL NUMERO ai | OR PALABRA MENOR_IGUAL NUMERO ai | OR PALABRA MAYOR_MENOR NUMERO ai |   
+;
+    ad ::= PUNTO_COMA {:parser.verAccion(parser.accionPosible);:}        
+;

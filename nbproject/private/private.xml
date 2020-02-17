@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/principal/Main.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/NuevoProyecto.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionEliminar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerMysql.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxMysql.cup</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerCSV.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/sym2.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxCSV.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/AnalizadorLexico2.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionSeleccionar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxCSV.cup</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/VentanaIDE.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerIDE.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/Pollo2CSV.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/PolloCSV.java</file>
+        </group>
+    </open-files>
+</project-private>

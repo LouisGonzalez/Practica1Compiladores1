@@ -1,0 +1,205 @@
+package gramaticas;
+import java_cup.runtime.Symbol;
+import operacionMysql.*;
+import java.util.ArrayList;
+import pollitos.PolloCSV;
+import pollitos.DatosColumna;
+import pollitos.Filtros;
+import pollitos.ValoresInsercion;
+import pollitos.Sentencias;
+
+parser code {:
+
+    public int accionPosible; 
+    public int noColumnaInsercion = 0;
+    public int noValorInsercion = 0;
+
+    ArrayList<PolloCSV> list;
+    ArrayList<Filtros> listFiltro;
+    ArrayList<String> opcion;
+    ArrayList<Integer> opcionesPrincipales;
+    ArrayList<ValoresInsercion> listadoValores;
+    ArrayList<Sentencias> listadoDatos;
+    ArrayList<DatosColumna> listadoColumnas;
+
+    OperacionEliminar eliminacion;
+    OperacionInsertar insercion;
+    OperacionSeleccionar seleccion;
+
+    public SintacticoPersonal(AnalizadorLexico4 lex, ArrayList<PolloCSV> list, ArrayList<DatosColumna> listadoColumnas, ArrayList<Filtros> listFiltro, ArrayList<String> opcion, ArrayList<Integer> opcionesPrincipales, ArrayList<ValoresInsercion> listadoValores, ArrayList<Sentencias> listadoDatos){
+        super(lex);
+        this.list = list;
+        this.listadoColumnas = listadoColumnas;
+        this.listFiltro = listFiltro;
+        this.opcion = opcion;
+        this.opcionesPrincipales = opcionesPrincipales;
+        this.listadoValores = listadoValores;
+        this.listadoDatos = listadoDatos;
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo+" "+mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error Sintaxis token: "+s.right,"");
+    }
+
+    public void mostrarValores(String columna){
+        
+    }
+
+    public void verAccion(int accionPosible){
+        System.out.println(accionPosible);
+    }
+    
+    public ArrayList<String> listarDatos(ArrayList<String> listadoColumnas, Object nuevoDato){
+        listadoColumnas.add((String)nuevoDato);
+        return listadoColumnas;
+    }
+    
+    public ArrayList<DatosColumna> listarColumnas(ArrayList<DatosColumna> listadoColumnas, Object dato, String tipo){
+        DatosColumna columna = new DatosColumna();
+        columna.setNombreColumna(dato);
+        columna.setTipo(tipo);
+        listadoColumnas.add(columna);
+        return listadoColumnas;
+    }
+
+    public ArrayList<Filtros> listarFiltros(ArrayList<Filtros> list, Object filtro, Object nombreColumna, int operacion, int tipoOperacion){
+        Filtros pollito = new Filtros();
+        pollito.setFiltro(filtro);
+        pollito.setNombreColumna(nombreColumna);
+        pollito.setPalabra_numero(operacion);
+        pollito.setTipoOperacion(tipoOperacion);
+        list.add(pollito);
+        return list;
+    }
+
+    public int retornarOpcion(int opcion, int valor){
+        opcion = valor;
+        return opcion;
+    }
+
+    public ArrayList<Integer> listarOpPrincipales(ArrayList<Integer> list, int opcion){
+        list.add(opcion);
+        return list;
+    }
+
+
+    //METODOS PARA LA OPERACION INSERTAR 
+    public ArrayList<DatosColumna> listarInsercion(ArrayList<DatosColumna> listadoColumnas, Object dato, int noColumna){
+        DatosColumna columna = new DatosColumna();
+        columna.setNombreColumna(dato);
+        columna.setNumColumnaInsercion(noColumna);
+        listadoColumnas.add(columna);
+        return listadoColumnas;
+    }
+    
+
+    public ArrayList<ValoresInsercion> listarValores(ArrayList<ValoresInsercion> listadoValores, Object dato, int noValor){
+        ValoresInsercion valor = new ValoresInsercion();
+        valor.setDato(dato);
+        valor.setNoDatoInsercion(noValor);
+        listadoValores.add(valor);
+        return listadoValores;
+    }
+
+    //METODOS PARA LA OPERACION ACTUALIZAR 
+    
+    public ArrayList<Sentencias> listarNuevosDatos(ArrayList<Sentencias> listadoDatos, Object nombreColumna, Object nuevoDato, int tipoDato){
+        Sentencias sentencia = new Sentencias();
+        sentencia.setNombreColumna(nombreColumna);
+        sentencia.setNuevoDato(nuevoDato);
+        sentencia.setPalabra_numero(tipoDato);
+        listadoDatos.add(sentencia);
+        return listadoDatos;
+
+    }
+
+
+
+    
+:}
+
+    terminal SELECCIONAR, FIN, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN, VALORES, AND, OR, AGRUPACION_A, COMILLA, COMA, 
+             AGRUPACION_B, PUNTO_COMA, ASTERISCO, IGUAL, MENOR_QUE, MAYOR_QUE, MENOR_IGUAL, MAYOR_IGUAL, MAYOR_MENOR, PALABRA, PUNTO;
+
+    terminal Integer NUMERO;         
+       
+    non terminal   aa, ab, ac, ad, ae, af, ag, ah, ai, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
+    
+    start with aa;
+
+    aa ::= SELECCIONAR b {:parser.listarOpPrincipales(parser.opcionesPrincipales, 1);:} | INSERTAR j {:parser.listarOpPrincipales(parser.opcionesPrincipales, 2);:} | ACTUALIZAR q {:parser.listarOpPrincipales(parser.opcionesPrincipales, 3);:} | ELIMINAR x {:parser.listarOpPrincipales(parser.opcionesPrincipales, 4);:}
+;   
+    b ::= ASTERISCO {: parser.listarDatos(parser.opcion, "opcion1");     :}  e  | PALABRA:e {: parser.listarDatos(parser.opcion, "opcion2");  parser.listarColumnas(parser.listadoColumnas, e, "Seleccion");   :} d e
+;   
+    d ::= COMA PALABRA:e {:parser.listarColumnas(parser.listadoColumnas, e, "Seleccion");:}  d |
+;
+    e ::= FILTRAR y | PUNTO_COMA
+;
+    j ::= AGRUPACION_A PALABRA:e {: parser.noColumnaInsercion++; parser.listarInsercion(parser.listadoColumnas, e, parser.noColumnaInsercion); :} k | m
+;
+    k ::= COMA PALABRA:e {: parser.noColumnaInsercion++; parser.listarInsercion(parser.listadoColumnas, e, parser.noColumnaInsercion); :} k | AGRUPACION_B m
+;
+    m ::= VALORES n
+;
+    n ::= AGRUPACION_A COMILLA PALABRA:e {: parser.noValorInsercion++;  parser.listarValores(parser.listadoValores, e, parser.noValorInsercion);    :} COMILLA o | AGRUPACION_A NUMERO:e {: parser.noValorInsercion++;  parser.listarValores(parser.listadoValores, e, parser.noValorInsercion); :} o
+;
+    o ::= COMA COMILLA PALABRA:e {: parser.noValorInsercion++;  parser.listarValores(parser.listadoValores, e, parser.noValorInsercion); :} COMILLA o | COMA NUMERO:e {: parser.noValorInsercion++;  parser.listarValores(parser.listadoValores, e, parser.noValorInsercion);  :} o | AGRUPACION_B PUNTO_COMA
+;
+    q ::= ASIGNAR r
+;
+    r ::= PALABRA:a IGUAL COMILLA PALABRA:e  {: parser.listarNuevosDatos(parser.listadoDatos, a, e, 1); :}    COMILLA l | PALABRA:a IGUAL NUMERO:e {: parser.listarNuevosDatos(parser.listadoDatos, a, e, 2); :} l
+;
+    l ::= COMA PALABRA:a IGUAL COMILLA PALABRA:e  {:parser.listarNuevosDatos(parser.listadoDatos, a, e, 1); :} COMILLA l | COMA PALABRA:a IGUAL NUMERO:e {: parser.listarNuevosDatos(parser.listadoDatos, a, e, 2); :}  l | PUNTO_COMA | FILTRAR y
+;
+    x ::= ASTERISCO PUNTO_COMA | FILTRAR y 
+;
+    y ::= PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA z ad 
+        | PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad 
+        | PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad 
+        | PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad 
+        | PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad 
+        | PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad 
+        | PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} z ad   
+;
+    z ::= af | ag | 
+;
+    af ::= AND PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ah 
+        | AND PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+;
+    ag ::= OR PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ai 
+        | OR PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai  
+;
+    ah ::= AND PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ah 
+        | AND PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        | AND PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah   
+        | AND PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+        |
+;
+    ai ::= OR PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ai 
+        | OR PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a  MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        | OR PALABRA:a  MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6);  parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
+        |   
+;
+    ad ::= PUNTO_COMA {:parser.verAccion(parser.accionPosible); System.out.println(parser.listFiltro.size());  System.out.println(parser.listadoColumnas.size());      :}        
+;

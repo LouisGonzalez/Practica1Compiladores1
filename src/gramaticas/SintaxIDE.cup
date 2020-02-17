@@ -1,0 +1,36 @@
+package gramaticas;
+import java_cup.runtime.Symbol;
+
+parser code {:
+    public SintacticoIDE (AnalizadorLexico2 lex){
+        super(lex);
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo+" "+mensaje);
+    }
+    
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis token: "+s.right,"");
+    };
+:}
+
+    terminal MAYOR, MENOR_QUE, PROYECTO, ARCHIVO, CARPETA, NOMBRE, UBICACION, 
+             IGUAL, COMILLA, PUNTO, DIAGONAL, PATH, PALABRA, NUMERO, FIN;
+
+    non terminal aa, c, b, d, z, e;
+
+    start with aa;
+    
+    aa ::= MENOR_QUE PROYECTO NOMBRE IGUAL COMILLA PALABRA COMILLA MAYOR b d
+;
+
+    b ::= MENOR_QUE ARCHIVO NOMBRE IGUAL COMILLA PALABRA COMILLA UBICACION IGUAL COMILLA PATH COMILLA DIAGONAL MAYOR b
+        | MENOR_QUE CARPETA NOMBRE IGUAL COMILLA PALABRA COMILLA MAYOR b FIN CARPETA MAYOR b
+        | 
+;
+
+    d ::= FIN PROYECTO MAYOR
+;
+
+ 
