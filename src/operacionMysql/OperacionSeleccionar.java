@@ -20,23 +20,36 @@ public class OperacionSeleccionar {
         if (opcion.get(0).equals("opcion1")) {
             System.out.println("no hay columnas de parametros");
         } else if (opcion.get(0).equals("opcion2")) {
-            
+
         }
     }
 
-    public void comprobacionColumna(JTextArea panelResultados, ArrayList<PolloCSV> datosCSV, ArrayList<DatosColumna> columnas, ArrayList<Filtros> filtro, ArrayList<String> opcion) {
+    public void comprobacionColumna(JTextArea panelResultados, ArrayList<PolloCSV> datosCSV, ArrayList<DatosColumna> columnas, ArrayList<Filtros> filtro, ArrayList<String> opcion, ArrayList<Integer> and_or, JTextArea panelErrores) {
         String titulos = "";
         boolean existe = true;
-        if(filtro.isEmpty()){
+        boolean existe2 = false;
+        if (filtro.isEmpty()) {
             if (opcion.get(0).equals("opcion1")) {
                 String texto = retornarTexto(datosCSV);
                 panelResultados.setText(texto);
             } else {
-            
-            
-                String texto = filtracionColumna(datosCSV, columnas);
-                panelResultados.setText(texto);
-            
+                for (DatosColumna parametro : columnas) {
+                    System.out.println(parametro.getNombreColumna()+"ssoy el nombre equisde");
+                        for (PolloCSV pollito : datosCSV) {
+                        if (parametro.getTipo().equals(opcion1)) {
+                            if (pollito.getFila() == 0 && pollito.getDatoColumna().equals(parametro.getNombreColumna())) {
+                                existe2 = true;
+                            }
+                        }
+                    }
+                }
+                if(existe2 == true){
+                    String texto = filtracionColumna(datosCSV, columnas);
+                    panelResultados.setText(texto);
+                } else {
+                    panelErrores.setText("Una o mas columnas no estan bien escritas");
+                }
+
             }
             System.out.println("no hay filtros dentro de la busqueda");
         } else {
@@ -59,8 +72,8 @@ public class OperacionSeleccionar {
                 }
             }
             if (existe == false) {
-                panelResultados.setText("Una o mas columnas no estan bien escritas");
-                
+                panelErrores.setText("Una o mas columnas no estan bien escritas");
+
             } else {
                 for (DatosColumna columna : columnas) {
                     if (columna.getTipo().equals(opcion1)) {
@@ -68,19 +81,54 @@ public class OperacionSeleccionar {
                     }
                 }
                 System.out.println(existenParametros);
-                comparacionDatos(panelResultados, datosCSV, filtro, columnas, existenParametros);
-            }   
+                comparacionDatos(panelResultados, datosCSV, filtro, columnas, existenParametros, and_or);
+            }
         }
-        
 
     }
 
-    public void comparacionDatos(JTextArea panelResultados, ArrayList<PolloCSV> list, ArrayList<Filtros> filtro, ArrayList<DatosColumna> columna, boolean existenParametros) {
+    public void comparacionDatos(JTextArea panelResultados, ArrayList<PolloCSV> list, ArrayList<Filtros> filtro, ArrayList<DatosColumna> columna, boolean existenParametros, ArrayList<Integer> and_or) {
         int contador = 0;
         String texto = "";
         int noColumna = 0;
         int contArray = 0;
+        int tipoFiltro = 0;
+        if(and_or.isEmpty()){
+            tipoFiltro = 0;
+        } else {
+            tipoFiltro = and_or.get(0);
+        }    
         ArrayList<Integer> filas = new ArrayList<>();
+        
+        if(tipoFiltro == 2){
+            for (Filtros aux : filtro) {
+            contador++;
+            switch (aux.getTipoOperacion()) {
+                case 0:
+                    texto += filtracionResultados(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+                case 1:
+                    texto += filtracionIgual(list, aux, noColumna, contador, filas, texto, columna, existenParametros, tipoFiltro);
+                    break;
+                case 2:
+                    texto += filtracionMayorQue(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+                case 3:
+                    texto += filtracionMenorQue(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+                case 4:
+                    texto += filtracionMayor_igual(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+                case 5:
+                    texto += filtracionMenor_igual(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+                case 6:
+                    texto += filtracionMayor_menor(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    break;
+            }
+        
+        }
+        } else {
         for (Filtros aux : filtro) {
             contador++;
             switch (aux.getTipoOperacion()) {
@@ -88,7 +136,7 @@ public class OperacionSeleccionar {
                     texto = filtracionResultados(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
                     break;
                 case 1:
-                    texto = filtracionIgual(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
+                    texto = filtracionIgual(list, aux, noColumna, contador, filas, texto, columna, existenParametros, tipoFiltro);
                     break;
                 case 2:
                     texto = filtracionMayorQue(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
@@ -106,6 +154,9 @@ public class OperacionSeleccionar {
                     texto = filtracionMayor_menor(list, aux, noColumna, contador, filas, texto, columna, existenParametros);
                     break;
             }
+        
+        }
+            
         }
         panelResultados.setText(texto);
         System.out.println(texto);
@@ -125,9 +176,8 @@ public class OperacionSeleccionar {
             }
         }
         return texto;
-     }
+    }
 
-    
     private String filtracionResultados(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros) {
         for (PolloCSV pollito : list) {
             if (pollito.getFila() == 0 && pollito.getDatoColumna().equals(aux.getNombreColumna())) {
@@ -138,7 +188,6 @@ public class OperacionSeleccionar {
                     if (contador == 1) {
                         if (pollito2.getFila() > 0 && pollito2.getColumna() == noColumna && aux.getFiltro().equals(pollito2.getDatoColumna())) {
                             texto += retornarTexto(filas, list, pollito2, existenParametros, columna);
-
                         }
                     } else {
                         int aux2 = retornarAux(contador, 0, filas.size() - contador2);
@@ -157,7 +206,8 @@ public class OperacionSeleccionar {
         return texto;
     }
 
-    private String filtracionIgual(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros) {
+    
+    private String filtracionIgual(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros, int tipoFiltro) {
         int auxConvertido = (Integer) aux.getFiltro();
         for (PolloCSV pollito : list) {
             if (pollito.getFila() == 0 && pollito.getDatoColumna().equals(aux.getNombreColumna())) {
@@ -172,31 +222,30 @@ public class OperacionSeleccionar {
                                 texto += retornarTexto(filas, list, pollito2, existenParametros, columna);
                             }
                         } else {
-                            int aux2 = retornarAux(contador, 0, filas.size() - contador2);
-                            int aux3 = filas.size();
-                            for (int i = aux2; i < aux3; i++) {
-                                if (pollito2.getFila() == filas.get(i) && (pollito2.getColumna() == noColumna) && (auxConvertido == datoColumnaConvertido)) {
-                                    texto += retornarTexto2(filas, i, list, pollito2, existenParametros, columna);
+                       
+                            if (tipoFiltro == 1) {
+
+                                int aux2 = retornarAux(contador, 0, filas.size() - contador2);
+                                int aux3 = filas.size();
+                                for (int i = aux2; i < aux3; i++) {
+                                    if (pollito2.getFila() == filas.get(i) && (pollito2.getColumna() == noColumna) && (auxConvertido == datoColumnaConvertido)) {
+                                        texto += retornarTexto2(filas, i, list, pollito2, existenParametros, columna);
+                                    }
                                 }
+                           } else if (tipoFiltro == 2) {
+                                if (pollito2.getFila() > 0 && (pollito2.getColumna() == noColumna) && (auxConvertido == datoColumnaConvertido)) {
+                                    texto += retornarTexto(filas, list, pollito2, existenParametros, columna);
+                                }  
                             }
                         }
                     }
                 }
             }
         }
-        System.out.println(contador2 + "    HOLA SOY EL CONTADOR HASTA EL FINAL");
-        for (int i = filas.size() - contador2; i < filas.size(); i++) {
-            System.out.println(filas.get(i) + "    filas que deberian aparecer luego de la purga");
-        }
-        System.out.println("-------------------------------------");
-        for (int i = 0; i < filas.size(); i++) {
-            System.out.println(filas.get(i) + "    filas totales");
-        }
-
         return texto;
-
     }
-
+    
+    
     private String filtracionMayorQue(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros) {
         int auxConvertido = (Integer) aux.getFiltro();
         for (PolloCSV pollito : list) {
@@ -227,6 +276,7 @@ public class OperacionSeleccionar {
         return texto;
     }
 
+
     private String filtracionMenorQue(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros) {
         int auxConvertido = (Integer) aux.getFiltro();
         for (PolloCSV pollito : list) {
@@ -256,6 +306,7 @@ public class OperacionSeleccionar {
         }
         return texto;
     }
+
 
     private String filtracionMayor_igual(ArrayList<PolloCSV> list, Filtros aux, int noColumna, int contador, ArrayList<Integer> filas, String texto, ArrayList<DatosColumna> columna, boolean existenParametros) {
         int auxConvertido = (Integer) aux.getFiltro();
@@ -302,7 +353,7 @@ public class OperacionSeleccionar {
                             if (pollito2.getFila() > 0 && pollito2.getColumna() == noColumna && auxConvertido <= datoColumnaConvertido) {
                                 texto += retornarTexto(filas, list, pollito2, existenParametros, columna);
                             }
-                     } else {
+                        } else {
                             int aux2 = retornarAux(contador, 0, filas.size() - contador2);
                             int aux3 = filas.size();
                             for (int i = aux2; i < aux3; i++) {
@@ -375,26 +426,24 @@ public class OperacionSeleccionar {
         }
         return columna;
     }
-    
-    
-    private String filtracionColumna(ArrayList<PolloCSV> list, ArrayList<DatosColumna> columna){
+
+    private String filtracionColumna(ArrayList<PolloCSV> list, ArrayList<DatosColumna> columna) {
         String texto = "";
         retornarDato(columna, list);
-        for(PolloCSV pollito : list){
-            for(DatosColumna parametro : columna){
-                if(parametro.getTipo().equals(opcion1)){
-                    if(pollito.getColumna() == parametro.getNumColumna()){
-                        texto += pollito.getDatoColumna()+ " ";
-                    }
+        for (PolloCSV pollito : list) {
+            for (DatosColumna parametro : columna) {
+                if (parametro.getTipo().equals(opcion1)) {
+                    if (pollito.getColumna() == parametro.getNumColumna()) {
+                        texto += pollito.getDatoColumna() + " ";
+                    } 
                 }
             }
-        
+
         }
-            texto += "\n";
-        
+        texto += "\n";
+
         return texto;
     }
-
 
     private String retornarTexto(ArrayList<Integer> filas, ArrayList<PolloCSV> list, PolloCSV pollito2, boolean existenParametros, ArrayList<DatosColumna> columna) {
         String texto = "";
@@ -422,6 +471,7 @@ public class OperacionSeleccionar {
         texto += "\n";
         return texto;
     }
+    
 
     private String retornarTexto2(ArrayList<Integer> filas, int i, ArrayList<PolloCSV> list, PolloCSV pollito2, boolean existenParametros, ArrayList<DatosColumna> columna) {
         String texto = "";
@@ -432,7 +482,7 @@ public class OperacionSeleccionar {
             if (pollito3.getFila() == pollito2.getFila()) {
                 if (existenParametros == true) {
                     for (DatosColumna parametro : columna) {
-                        if(parametro.getTipo().equals(opcion1)){
+                        if (parametro.getTipo().equals(opcion1)) {
                             if (pollito3.getColumna() == parametro.getNumColumna()) {
                                 texto += pollito3.getDatoColumna() + " ";
                             }
@@ -448,6 +498,5 @@ public class OperacionSeleccionar {
         texto += "\n";
         return texto;
     }
-
 
 }

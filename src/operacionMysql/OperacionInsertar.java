@@ -1,6 +1,5 @@
 package operacionMysql;
 
-import com.opencsv.CSVWriter;
 import gramaticas.AnalizadorLexico3;
 import gramaticas.SintaxCSV;
 import java.io.BufferedWriter;
@@ -9,8 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import pollitos.DatosColumna;
 import pollitos.NuevaFila;
@@ -27,7 +24,7 @@ public class OperacionInsertar {
         boolean verificadorColumna = verificadorColumnas(listadoColumnas);
         if (verificadorColumna == true) {
             if (listadoColumnas.size() != listadoValores.size()) {
-                System.out.println("Error, ambos parametros deben tener la misma cantidad de objetos");
+                panelResultados.setText("Error, ambos parametros deben tener la misma cantidad de objetos");
             } else {
                 int i = 0;
                 boolean existe = true;

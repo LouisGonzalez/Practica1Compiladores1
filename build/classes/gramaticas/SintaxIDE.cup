@@ -1,9 +1,15 @@
 package gramaticas;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import pollitos.ArchivosIDE;
 
 parser code {:
-    public SintacticoIDE (AnalizadorLexico2 lex){
+
+    ArrayList<ArchivosIDE> listaArchivos;
+    
+    public SintacticoIDE (AnalizadorLexico2 lex, ArrayList<ArchivosIDE> listaArchivos){
         super(lex);
+        this.listaArchivos = listaArchivos;
     }
 
     public void setAccion(String tipo, String mensaje, String accion){
@@ -12,7 +18,19 @@ parser code {:
     
     public void syntax_error(Symbol s){
         setAccion("ERROR", "Error sintaxis token: "+s.right,"");
-    };
+    }
+
+    // 1.         Proyecto
+    // 2.         Carpeta
+    // 3.         Archivo
+
+    public ArrayList<ArchivosIDE> agregarNombres(Object nombreElemento, int tipoElemento){
+        
+        
+
+    }
+
+
 :}
 
     terminal MAYOR, MENOR_QUE, PROYECTO, ARCHIVO, CARPETA, NOMBRE, UBICACION, 

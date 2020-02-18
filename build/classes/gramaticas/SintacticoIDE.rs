@@ -1,2 +1,0 @@
-gramaticas.CUP$SintacticoIDE$actions
-gramaticas.SintacticoIDE

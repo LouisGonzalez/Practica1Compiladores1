@@ -7,13 +7,14 @@ import pollitos.DatosColumna;
 import pollitos.Filtros;
 import pollitos.ValoresInsercion;
 import pollitos.Sentencias;
+import javax.swing.JTextArea;
 
 parser code {:
 
     public int accionPosible; 
     public int noColumnaInsercion = 0;
     public int noValorInsercion = 0;
-
+    JTextArea panel;
     ArrayList<PolloCSV> list;
     ArrayList<Filtros> listFiltro;
     ArrayList<String> opcion;
@@ -21,12 +22,14 @@ parser code {:
     ArrayList<ValoresInsercion> listadoValores;
     ArrayList<Sentencias> listadoDatos;
     ArrayList<DatosColumna> listadoColumnas;
+    ArrayList<Integer> and_or;
+    
 
     OperacionEliminar eliminacion;
     OperacionInsertar insercion;
     OperacionSeleccionar seleccion;
 
-    public SintacticoPersonal(AnalizadorLexico4 lex, ArrayList<PolloCSV> list, ArrayList<DatosColumna> listadoColumnas, ArrayList<Filtros> listFiltro, ArrayList<String> opcion, ArrayList<Integer> opcionesPrincipales, ArrayList<ValoresInsercion> listadoValores, ArrayList<Sentencias> listadoDatos){
+    public SintacticoPersonal(AnalizadorLexico4 lex, ArrayList<PolloCSV> list, ArrayList<DatosColumna> listadoColumnas, ArrayList<Filtros> listFiltro, ArrayList<String> opcion, ArrayList<Integer> opcionesPrincipales, ArrayList<ValoresInsercion> listadoValores, ArrayList<Sentencias> listadoDatos, ArrayList<Integer> and_or){
         super(lex);
         this.list = list;
         this.listadoColumnas = listadoColumnas;
@@ -35,6 +38,7 @@ parser code {:
         this.opcionesPrincipales = opcionesPrincipales;
         this.listadoValores = listadoValores;
         this.listadoDatos = listadoDatos;
+        this.and_or = and_or;
     }
 
     public void setAccion(String tipo, String mensaje, String accion){
@@ -86,6 +90,12 @@ parser code {:
         return list;
     }
 
+    public ArrayList<Integer> listarTipoFiltro(ArrayList<Integer> list, int tipo){
+    System.out.println("mira weeeeee si funciono"+tipo);    
+    list.add(tipo);
+        
+        return list;
+    }
 
     //METODOS PARA LA OPERACION INSERTAR 
     public ArrayList<DatosColumna> listarInsercion(ArrayList<DatosColumna> listadoColumnas, Object dato, int noColumna){
@@ -167,21 +177,21 @@ parser code {:
 ;
     z ::= af | ag | 
 ;
-    af ::= AND PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ah 
-        | AND PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
-        | AND PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
-        | AND PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
-        | AND PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
-        | AND PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
-        | AND PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
+    af ::= AND PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro");  parser.listarTipoFiltro(parser.and_or, 1);      :} COMILLA ah 
+        | AND PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
+        | AND PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
+        | AND PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
+        | AND PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
+        | AND PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
+        | AND PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 1);    :} ah 
 ;
-    ag ::= OR PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ai 
-        | OR PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
-        | OR PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
-        | OR PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
-        | OR PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
-        | OR PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai 
-        | OR PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ai  
+    ag ::= OR PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2); :} COMILLA ai 
+        | OR PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2); :} ai 
+        | OR PALABRA:a MAYOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 2); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2);    :} ai 
+        | OR PALABRA:a MENOR_QUE NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 3); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2);   :} ai 
+        | OR PALABRA:a MAYOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 4); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2);   :} ai 
+        | OR PALABRA:a MENOR_IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 5); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2);  :} ai 
+        | OR PALABRA:a MAYOR_MENOR NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 6); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); parser.listarTipoFiltro(parser.and_or, 2);  :} ai  
 ;
     ah ::= AND PALABRA:a IGUAL COMILLA PALABRA:e {: parser.listarFiltros(parser.listFiltro, e, a, 1, 0); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} COMILLA ah 
         | AND PALABRA:a IGUAL NUMERO:e {: parser.listarFiltros(parser.listFiltro, e, a, 2, 1); parser.listarColumnas(parser.listadoColumnas, a, "Filtro"); :} ah 
