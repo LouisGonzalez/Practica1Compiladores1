@@ -1,0 +1,2 @@
+gramaticas.SintacticoMysql
+gramaticas.CUP$SintacticoMysql$actions

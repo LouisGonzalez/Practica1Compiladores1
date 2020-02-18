@@ -1,0 +1,2 @@
+gramaticas.CUP$SintacticoPersonal$actions
+gramaticas.SintacticoPersonal
