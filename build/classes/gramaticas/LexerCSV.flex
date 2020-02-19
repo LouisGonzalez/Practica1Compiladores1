@@ -14,10 +14,11 @@ import java_cup.runtime.Symbol;
 Letra = [a-zA-Z]   
 Numero = [0123456789]
 Numero2 = [123456789]
-Simbolo = [-_@$#%*(){}:;$]
+Simbolo = [-_@$#%*{}:;&!?]
 Punto = [.]
 enter = [\n]
 coma = [,]
+espacio = [" "]+
 
 
 %{
@@ -34,7 +35,7 @@ coma = [,]
     ","                                                                 {return symbol(sym3.COMA);}
     "\n"                                                                {return symbol(sym3.ENTER);}
     {coma}{enter}                                                       {return symbol(sym3.COMA_ENTER);}
-    {Letra}({Letra}|{Numero}|{Simbolo})*                                {return symbol(sym3.DATO_ALFANUMERICO, new String(yytext()));}
+    ({Letra}|{Simbolo})({Letra}|{Numero}|{Simbolo}|{espacio})*                                {return symbol(sym3.DATO_ALFANUMERICO, new String(yytext()));}
     ("(-"{Numero}+")") | {Numero}+                                      {return symbol(sym3.DATO_NUMERICO, new Integer(yytext()));}
     ({Numero2}{Numero}*{Punto}|{Punto}){Numero}*{Numero2}               {return symbol(sym3.DATO_DECIMAL, new Integer(yytext()));}
     .                                                                   {System.out.println(yyline+" "+yycolumn);}

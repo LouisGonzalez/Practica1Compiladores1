@@ -12,8 +12,8 @@ import java_cup.runtime.Symbol;
 /*Identificadores*/
 Letra = [a-zA-Z]
 Numero = [0123456789]
-espacio = [ ,\t,\r,\n]+
-Simbolo = [-_@$#%*{}:;$]
+espacio = [ ,\n]+
+Simbolo = [-_@$#%{}:&!?]
 
 
 %{
@@ -54,6 +54,6 @@ Simbolo = [-_@$#%*{}:;$]
             "."                                                             {return symbol(sym4.PUNTO);}
             "\""                                                            {return symbol(sym4.COMILLA);}
             ("(-"{Numero}+")") | {Numero}+                                  {return symbol(sym4.NUMERO, new Integer(yytext()));}
-            {Letra}({Letra}|{Numero}|{Simbolo})*                            {return symbol(sym4.PALABRA, new String(yytext()));}
+            ({Letra}|{Simbolo})({Letra}|{Numero}|{Simbolo})*                {return symbol(sym4.PALABRA, new String(yytext()));}
             .                                                               {System.out.println(yytext()+" "+yyline+" "+yycolumn);}
 }
