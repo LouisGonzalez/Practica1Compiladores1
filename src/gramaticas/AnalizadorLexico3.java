@@ -35,9 +35,9 @@ public class AnalizadorLexico3 implements java_cup.runtime.Scanner {
    */
   private static final String ZZ_CMAP_PACKED = 
     "\12\0\1\6\1\13\1\13\1\13\25\0\3\4\2\0\1\10\1\12"+
-    "\1\4\1\0\1\7\1\11\1\5\1\0\1\2\11\3\6\0\1\4"+
-    "\32\1\4\0\1\4\1\0\32\1\12\0\1\13\u1fa2\0\1\13\1\13"+
-    "\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\1\4\1\0\1\7\1\11\1\5\1\0\1\2\11\3\2\4\4\0"+
+    "\1\4\32\1\4\0\1\4\1\0\32\1\1\4\1\0\1\4\7\0"+
+    "\1\13\u1fa2\0\1\13\1\13\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -107,7 +107,7 @@ public class AnalizadorLexico3 implements java_cup.runtime.Scanner {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\1\4\1\5\1\2\1\6\1\7\1\10"+
-    "\1\11\2\2\16\0\4\3\4\0\1\3\4\0\2\4"+
+    "\1\11\2\2\16\0\4\3\3\0\3\3\3\0\2\4"+
     "\12\0\2\5\1\0\1\12\10\0\1\12\1\13\16\0"+
     "\1\14\16\0\1\15\4\0\2\16\12\0\2\16\6\0"+
     "\1\17\1\0";
@@ -260,7 +260,7 @@ public class AnalizadorLexico3 implements java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 94) {
+    while (i < 102) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);

@@ -4,20 +4,25 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/principal/Main.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/NuevoProyecto.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/NuevoElementoProyecto.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionEliminar.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerMysql.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxPersonal.cup</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/paneles/PanelModelo.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintacticoMysql.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxMysql.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerCSV.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/sym2.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxCSV.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/AnalizadorLexico2.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/ValoresInsercion.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxIDE.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionSeleccionar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintacticoIDE.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/ArchivosIDE.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/SintaxCSV.cup</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/VentanaIDE.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/gramaticas/LexerIDE.flex</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/Pollo2CSV.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/pollitos/PolloCSV.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionInsertar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/Practica%201/src/operacionMysql/OperacionActualizar.java</file>
         </group>
     </open-files>
 </project-private>

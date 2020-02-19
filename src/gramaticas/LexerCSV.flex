@@ -14,7 +14,7 @@ import java_cup.runtime.Symbol;
 Letra = [a-zA-Z]   
 Numero = [0123456789]
 Numero2 = [123456789]
-Simbolo = [-_@$#%*]
+Simbolo = [-_@$#%*(){}:;$]
 Punto = [.]
 enter = [\n]
 coma = [,]

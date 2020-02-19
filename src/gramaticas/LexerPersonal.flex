@@ -13,6 +13,8 @@ import java_cup.runtime.Symbol;
 Letra = [a-zA-Z]
 Numero = [0123456789]
 espacio = [ ,\t,\r,\n]+
+Simbolo = [-_@$#%*{}:;$]
+
 
 %{
     private Symbol symbol(int tipo){
@@ -52,6 +54,6 @@ espacio = [ ,\t,\r,\n]+
             "."                                                             {return symbol(sym4.PUNTO);}
             "\""                                                            {return symbol(sym4.COMILLA);}
             ("(-"{Numero}+")") | {Numero}+                                  {return symbol(sym4.NUMERO, new Integer(yytext()));}
-            {Letra}({Letra}|{Numero})*                                      {return symbol(sym4.PALABRA, new String(yytext()));}
+            {Letra}({Letra}|{Numero}|{Simbolo})*                            {return symbol(sym4.PALABRA, new String(yytext()));}
             .                                                               {System.out.println(yytext()+" "+yyline+" "+yycolumn);}
 }

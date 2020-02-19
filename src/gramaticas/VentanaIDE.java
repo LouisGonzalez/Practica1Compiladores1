@@ -1,7 +1,7 @@
 package gramaticas;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,6 @@ public class VentanaIDE extends javax.swing.JFrame {
     private DefaultTreeModel model;
     private String archivoPrincipal = "";
  
-
     public VentanaIDE() {
         initComponents();
         setLocationRelativeTo(null);
@@ -55,7 +54,7 @@ public class VentanaIDE extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         panelFondo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        panelFondo.add(panelIDE, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 680, 510));
+        panelFondo.add(panelIDE, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 10, 760, 570));
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         arbolCarpeta.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -66,7 +65,7 @@ public class VentanaIDE extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(arbolCarpeta);
 
-        panelFondo.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(13, 10, 130, 510));
+        panelFondo.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(13, 10, 130, 560));
 
         barra1.setText("Proyectos");
 
@@ -99,23 +98,19 @@ public class VentanaIDE extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelFondo, javax.swing.GroupLayout.DEFAULT_SIZE, 866, Short.MAX_VALUE)
+                .addComponent(panelFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelFondo, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelFondo, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
-    
     private void opcion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcion1ActionPerformed
         ArrayList<ArchivosIDE> archivos = new ArrayList<>();
         JFileChooser chooser;
@@ -132,9 +127,8 @@ public class VentanaIDE extends javax.swing.JFrame {
             archivoPrincipal = chooser.getSelectedFile().toString();
             proyecto = new File(chooser.getSelectedFile().getAbsolutePath());
             path = chooser.getSelectedFile().toString();
-            
         } else {
-            System.out.println("No hubo ninguna seleccion");
+            JOptionPane.showMessageDialog(null, "No hubo ninguna seleccion");
         }
         File ide = new File(path+"/DATA.ide");
         if (ide.exists()) {
@@ -149,25 +143,19 @@ public class VentanaIDE extends javax.swing.JFrame {
                 AnalizadorLexico2 lexico = new AnalizadorLexico2(new StringReader(ideGramatica));
         try {
             new SintacticoIDE(lexico, archivos).parse();
-            //---------------------------------------------------------------------------------------------
             DefaultMutableTreeNode dt;
             dt = agregarNodos(null, proyecto);
             model = new DefaultTreeModel(dt, true);
             arbolCarpeta.setModel(model);
             arbolCarpeta.setCellRenderer(new ArbolCompleto());
             arbolCarpeta.addTreeSelectionListener(new TreeSelectionListener() {
-                
-                
-                
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
-
                     DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
                     System.out.println("Has elegido " + nodo);
                     File seleccion = new File(nodo.toString());
                     System.out.println(seleccion.getName());
                     if (nodo.toString().endsWith(".csv") || nodo.toString().endsWith(".ide")) {
-                        //CONTINUAR AQUI HACIENDO QUE HABRA EL ARCHIVO .CSV EN PESTA;AS DENTRO DEL PANEL DINAMICO
                         System.out.println(seleccion.getName());
                         String texto = new String();
                         FileReader fr = null;
@@ -175,25 +163,11 @@ public class VentanaIDE extends javax.swing.JFrame {
                         try {
                             fr = new FileReader(nodo.toString());
                             entrada = new BufferedReader(fr);
-                            // TextArea text = new TextArea();
-                            //TextArea textoBj = new TextArea();
                             while (entrada.ready()) {
                                 texto += entrada.readLine() + "\n";
 
                             }
-                
-                            abrirPanel(seleccion.getName(), texto, seleccion.toString());
-                            //    text.setText("asdf");
-                            //   textoBj.setText("area de consultas:");
-
-                            /*arbolCarpeta.addMouseListener(new MouseAdapter(){
-                            @Override
-                            public void mouseClicked(MouseEvent e){
-                                if(e.getButton() == 3){
-                               doMouseClicked(e);
-                                }
-                            }
-                        });*/
+                               abrirPanel(seleccion.getName(), texto, seleccion.toString());
                         } catch (FileNotFoundException ex) {
                             Logger.getLogger(VentanaIDE.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IOException ex) {
@@ -207,46 +181,26 @@ public class VentanaIDE extends javax.swing.JFrame {
                                 }
                             }
                         }
-
-                    }
+               }
                 }
             });
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error de gramatica dentro del ide");
         }
-    
-                
-            
-            
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(VentanaIDE.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(VentanaIDE.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-
         } else {
-            JOptionPane.showMessageDialog(null, "El archvio que deseas abrir no es un proyecto compatible");
+            JOptionPane.showMessageDialog(null, "El archivo que deseas abrir no es un proyecto compatible");
         }
     }//GEN-LAST:event_opcion1ActionPerformed
 
-    void doMouseClicked(MouseEvent me) {
-        TreePath tp = arbolCarpeta.getPathForLocation(me.getX(), me.getY());
-        int row = arbolCarpeta.getRowForLocation(me.getX(), me.getY());
-        TreePath tp2 = arbolCarpeta.getPathForRow(arbolCarpeta.getRowForPath(tp));
-    arbolCarpeta.getRowForPath(tp);
-    arbolCarpeta.getAnchorSelectionPath();
-        System.out.println(tp2);
-  }
     
     private void opcion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcion2ActionPerformed
-        
-        
         NuevoProyecto nuevo = new NuevoProyecto(this, true);
         nuevo.setVisible(true);
-        
-        
     }//GEN-LAST:event_opcion2ActionPerformed
 
     private void arbolCarpetaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_arbolCarpetaMouseClicked
@@ -264,9 +218,6 @@ public class VentanaIDE extends javax.swing.JFrame {
                 System.out.println(direccion);
             }
             String[] paths = direccion.split("/");
-            System.out.println(paths[paths.length - 1]+"  soy el ultimo valor");
-            
-            
             try {
                 FileReader fr = new FileReader(archivoPrincipal+"/DATA.ide");
                 BufferedReader br = new BufferedReader(fr);
@@ -279,25 +230,11 @@ public class VentanaIDE extends javax.swing.JFrame {
                     if(linea.equals("<PROYECTO nombre=\""+paths[paths.length-1]+"\">") || linea.equals("<CARPETA nombre=\""+paths[paths.length-1]+"\">")){
                         System.out.println("se encontro una coincidencia en la linea "+contador);
                         aux = contador;
-                        
-                        
-                        
-                        
                     }
                 }
-                System.out.println("el valor del auxiliar viene siendo "+aux);
-                
-                
                 NuevoElementoProyecto nuevo = new NuevoElementoProyecto(this, true, aux, filasIDE, direccion);
                 nuevo.setVisible(true);
-                
-                for(String c: filasIDE){
-                    System.out.println(c);
-                }
-                
                 retornarTexto(filasIDE, archivoPrincipal+"/DATA.ide");
-                
-                
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(VentanaIDE.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -339,32 +276,37 @@ public class VentanaIDE extends javax.swing.JFrame {
     private void abrirPanel(String titulo, String texto, String path){
         PanelModelo panel = new PanelModelo(texto, path);
         panelIDE.addTab(titulo, panel);
-    }
-    
-    /*public void analizarLexico() {
-        String texto = textoPrueba.getText();
-        AnalizadorLexico lexico = new AnalizadorLexico(new StringReader(texto));
-        try {
-            new SintacticoMysql(lexico).parse();
-            textoConsultas.setText("Analisis realizado correctamente");
-        } catch (Exception ex) {
-            System.out.println("error");
-        }
-
-    }
-    
-    private void analizarIDE(){
-        String texto = textoPrueba2.getText();
-        AnalizadorLexico2 lexico = new AnalizadorLexico2(new StringReader(texto));
-        try {
-            new SintacticoIDE(lexico).parse();
-            textoConsultas.setText("analisis realizado al 1000");
-        } catch (Exception ex) {
-            System.out.println("Error lexico perro");
-        }
+        panelIDE.setTabComponentAt(panelIDE.getTabCount()-1, crearCabecera(titulo));
         
-    }*/
- 
+    }
+    
+    public JPanel crearCabecera(String texto) {
+        final String titulo = texto;
+        JPanel pnlTab = new JPanel();
+        pnlTab.setLayout(new BoxLayout(pnlTab, BoxLayout.LINE_AXIS));
+        pnlTab.setOpaque(false);
+        JButton btnCerrar = new JButton("x");
+        btnCerrar.setPreferredSize(new java.awt.Dimension(10,10));
+        JLabel lblTitulo = new JLabel(texto + "    ");
+        btnCerrar.setBorderPainted(false);
+        btnCerrar.setOpaque(false);
+        btnCerrar.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            int i;
+            for (i = 0; i <= panelIDE.getTabCount() - 1; i++){
+                if (titulo.equals(panelIDE.getTitleAt(i))) {
+                    break;
+                }
+            }
+            panelIDE.removeTabAt(i);
+        }
+    });
+    pnlTab.add(lblTitulo);
+    pnlTab.add(btnCerrar);
+    return pnlTab;
+}
+    
+    
     
     DefaultMutableTreeNode agregarNodos(DefaultMutableTreeNode arbol, File dir){
         DefaultMutableTreeNode modelo = new DefaultMutableTreeNode(dir);
@@ -389,6 +331,7 @@ public class VentanaIDE extends javax.swing.JFrame {
         for(int num = 0; num < vectorArchivos.size(); num++){
             File archivo = vectorArchivos.elementAt(num);
             DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(archivo);
+            
             if(archivo.isDirectory()){
                 agregarNodos(nodo, archivo);
             }
@@ -402,7 +345,6 @@ public class VentanaIDE extends javax.swing.JFrame {
         
         @Override
         public Component getTreeCellRendererComponent(JTree arbol, Object valor, boolean boleano1, boolean boleano2, boolean boleano3, int filas, boolean boleano4){
-          //  System.out.println(valor);
             super.getTreeCellRendererComponent(arbol, valor, boleano1, boleano2, boleano3, filas, boleano4);
             if(valor instanceof DefaultMutableTreeNode){
                 valor = ((DefaultMutableTreeNode)valor).getUserObject();
@@ -410,7 +352,7 @@ public class VentanaIDE extends javax.swing.JFrame {
                     File archivo = (File) valor;
                     if(archivo.isFile()){
                         setIcon(archivoVista.getSystemIcon(archivo));
-                        setText(archivo.getPath());
+                        setText(archivo.getName());
                     } else {
                         setIcon(archivoVista.getSystemIcon(archivo));
                         setText(archivo.getName());
